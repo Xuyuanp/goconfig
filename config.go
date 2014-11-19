@@ -134,14 +134,8 @@ func (c *Configuration) Load(rd io.Reader) (err error) {
 			value = envHolderRegexp.ReplaceAllStringFunc(value, func(s string) string {
 				k := s[2 : len(s)-1]
 				ss := os.Getenv(k)
-				if ss == "" {
-					err = fmt.Errorf("Invalid ENV: %d %s", linno, k)
-				}
 				return ss
 			})
-			if err != nil {
-				return
-			}
 			// Fill local config var placeholder.
 			value = configHolderRegexp.ReplaceAllStringFunc(value, func(s string) string {
 				k := s[2 : len(s)-1]
