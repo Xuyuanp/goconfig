@@ -72,6 +72,16 @@ func (c *Configuration) GetInt(key string) (int, error) {
 	return 0, fmt.Errorf("Invalid key: %s", key)
 }
 
+// LoadFile method loads config from a file.
+func (c *Configuration) LoadFile(fname string) error {
+	file, err := os.Open(fname)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	return c.Load(file)
+}
+
 var configHolderRegexp = regexp.MustCompile(`\$\([\w_][\w\d_]*[\.[\w_][\w\d_]*]?\)`)
 var envHolderRegexp = regexp.MustCompile(`\$\{[\w_][\w\d_]*[\.[\w_][\w\d_]*]?\}`)
 var keyRegexp = regexp.MustCompile(`^[\w_][\w\d_]*$`)
@@ -164,6 +174,10 @@ func readLine(rd *bufio.Reader) (line string, err error) {
 		}
 	}
 	return
+}
+
+func LoadFile(fname string) error {
+	return Default.LoadFile(fname)
 }
 
 func Load(rd io.Reader) error {
