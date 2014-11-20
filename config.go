@@ -22,7 +22,6 @@ import (
 	"io"
 	"os"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -30,14 +29,16 @@ var Default = New()
 
 // Configuration struct
 type Configuration struct {
-	Fields   map[string]string
+	*Section
 	Sections map[string]*Section
 }
 
 // New methods return an empty Configuration.
 func New() *Configuration {
 	return &Configuration{
-		Fields:   map[string]string{},
+		Section: &Section{
+			Fields: map[string]string{},
+		},
 		Sections: map[string]*Section{},
 	}
 }
@@ -51,10 +52,7 @@ func (c *Configuration) GetString(key string) (string, error) {
 			return section.GetString(keys[1])
 		}
 	}
-	if value, ok := c.Fields[keys[0]]; ok {
-		return value, nil
-	}
-	return "", fmt.Errorf("Invalid key: %s", key)
+	return c.Section.GetString(key)
 }
 
 // GetInt method returns integer value.
@@ -66,10 +64,7 @@ func (c *Configuration) GetInt(key string) (int, error) {
 			return section.GetInt(keys[1])
 		}
 	}
-	if value, ok := c.Fields[keys[0]]; ok {
-		return strconv.Atoi(value)
-	}
-	return 0, fmt.Errorf("Invalid key: %s", key)
+	return c.Section.GetInt(key)
 }
 
 // LoadFile method loads config from a file.
@@ -91,7 +86,7 @@ var sectionRegexp = regexp.MustCompile(`^\[[\w_][\w\d_]*\]$`)
 // if loading failed.
 func (c *Configuration) Load(rd io.Reader) (err error) {
 	reader := bufio.NewReader(rd)
-	var currentSection *Section
+	currentSection := c.Section
 	linno := 0
 	var line string
 	for {
@@ -148,11 +143,7 @@ func (c *Configuration) Load(rd io.Reader) (err error) {
 			if err != nil {
 				return
 			}
-			if currentSection == nil {
-				c.Fields[key] = value
-			} else {
-				currentSection.Fields[key] = value
-			}
+			currentSection.Fields[key] = value
 		}
 	}
 	return nil
