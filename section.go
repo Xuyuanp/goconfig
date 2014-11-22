@@ -20,6 +20,7 @@ import (
 	"fmt"
 
 	"strconv"
+	"strings"
 )
 
 // Section struct is considered as a unite of series of config.
@@ -33,7 +34,7 @@ func (s *Section) GetString(key string) (string, error) {
 	if value, ok := s.Fields[key]; ok {
 		return value, nil
 	}
-	return "", fmt.Errorf("")
+	return "", fmt.Errorf("Unknown key: %s", key)
 }
 
 // GetInt method returns integer value.
@@ -41,5 +42,17 @@ func (s *Section) GetInt(key string) (int, error) {
 	if value, ok := s.Fields[key]; ok {
 		return strconv.Atoi(value)
 	}
-	return 0, fmt.Errorf("")
+	return 0, fmt.Errorf("Unknown key: %s", key)
+}
+
+func (s *Section) GetStrings(key string) ([]string, error) {
+	if value, ok := s.Fields[key]; ok {
+		if strings.HasPrefix("[") && strings.HasSuffix("]") {
+			value = value[1 : len(value)-1]
+			values = strings.Split(value, ",")
+			return values
+		}
+		return nil, fmt.Errorf("Wrong type: %s", value)
+	}
+	return nil, fmt.Errorf("Unknown key: %s", key)
 }
