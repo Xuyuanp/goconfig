@@ -28,8 +28,9 @@ func TestSection(t *testing.T) {
 		section = &Section{
 			Name: "Test",
 			Fields: map[string]string{
-				"ip":   "192.168.1.1",
-				"port": "8080",
+				"ip":      "192.168.1.1",
+				"port":    "8080",
+				"id_list": "[1, 2, 3, 4]",
 			},
 		}
 		convey.Convey(`GetString("ip")`, func() {
@@ -45,6 +46,18 @@ func TestSection(t *testing.T) {
 			value, err := section.GetInt("port")
 			convey.Convey(`value should be 8080`, func() {
 				convey.So(value, convey.ShouldEqual, 8080)
+			})
+			convey.Convey(`and error should be nil`, func() {
+				convey.So(err, convey.ShouldBeNil)
+			})
+		})
+		convey.Convey(`GetStrings("id_list")`, func() {
+			value, err := section.GetStrings("id_list")
+			convey.Convey(`value should be "[1, 2, 3, 4]"`, func() {
+				convey.So(value[0], convey.ShouldEqual, "1")
+				convey.So(value[1], convey.ShouldEqual, "2")
+				convey.So(value[2], convey.ShouldEqual, "3")
+				convey.So(value[3], convey.ShouldEqual, "4")
 			})
 			convey.Convey(`and error should be nil`, func() {
 				convey.So(err, convey.ShouldBeNil)

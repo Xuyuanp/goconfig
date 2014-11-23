@@ -45,12 +45,17 @@ func (s *Section) GetInt(key string) (int, error) {
 	return 0, fmt.Errorf("Unknown key: %s", key)
 }
 
+// GetStrings method returns []string value.
+// The value should start
 func (s *Section) GetStrings(key string) ([]string, error) {
 	if value, ok := s.Fields[key]; ok {
-		if strings.HasPrefix("[") && strings.HasSuffix("]") {
+		if strings.HasPrefix(value, "[") && strings.HasSuffix(value, "]") {
 			value = value[1 : len(value)-1]
-			values = strings.Split(value, ",")
-			return values
+			values := strings.Split(value, ",")
+			for index, v := range values {
+				values[index] = strings.Trim(v, " \t")
+			}
+			return values, nil
 		}
 		return nil, fmt.Errorf("Wrong type: %s", value)
 	}
