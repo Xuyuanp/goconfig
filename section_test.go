@@ -53,11 +53,23 @@ func TestSection(t *testing.T) {
 		})
 		convey.Convey(`GetStrings("id_list")`, func() {
 			value, err := section.GetStrings("id_list")
-			convey.Convey(`value should be "[1, 2, 3, 4]"`, func() {
+			convey.Convey(`value should be ["1", "2", "3", "4"]`, func() {
 				convey.So(value[0], convey.ShouldEqual, "1")
 				convey.So(value[1], convey.ShouldEqual, "2")
 				convey.So(value[2], convey.ShouldEqual, "3")
 				convey.So(value[3], convey.ShouldEqual, "4")
+			})
+			convey.Convey(`and error should be nil`, func() {
+				convey.So(err, convey.ShouldBeNil)
+			})
+		})
+		convey.Convey(`GetInts("id_list")`, func() {
+			value, err := section.GetInts("id_list")
+			convey.Convey(`value should be [1, 2, 3, 4]`, func() {
+				convey.So(value[0], convey.ShouldEqual, 1)
+				convey.So(value[1], convey.ShouldEqual, 2)
+				convey.So(value[2], convey.ShouldEqual, 3)
+				convey.So(value[3], convey.ShouldEqual, 4)
 			})
 			convey.Convey(`and error should be nil`, func() {
 				convey.So(err, convey.ShouldBeNil)

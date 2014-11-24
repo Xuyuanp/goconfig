@@ -46,7 +46,7 @@ func (s *Section) GetInt(key string) (int, error) {
 }
 
 // GetStrings method returns []string value.
-// The value should start
+// The value should start with [ and end with ].
 func (s *Section) GetStrings(key string) ([]string, error) {
 	if value, ok := s.Fields[key]; ok {
 		if strings.HasPrefix(value, "[") && strings.HasSuffix(value, "]") {
@@ -56,6 +56,29 @@ func (s *Section) GetStrings(key string) ([]string, error) {
 				values[index] = strings.Trim(v, " \t")
 			}
 			return values, nil
+		}
+		return nil, fmt.Errorf("Wrong type: %s", value)
+	}
+	return nil, fmt.Errorf("Unknown key: %s", key)
+}
+
+// GetStrings method returns []int value.
+// The value should start with [ and end with ].
+func (s *Section) GetInts(key string) ([]int, error) {
+	if value, ok := s.Fields[key]; ok {
+		if strings.HasPrefix(value, "[") && strings.HasSuffix(value, "]") {
+			value = value[1 : len(value)-1]
+			values := strings.Split(value, ",")
+			ints := make([]int, len(values))
+			for index, v := range values {
+				v = strings.Trim(v, " \t")
+				i, err := strconv.Atoi(v)
+				if err != nil {
+					return nil, err
+				}
+				ints[index] = i
+			}
+			return ints, nil
 		}
 		return nil, fmt.Errorf("Wrong type: %s", value)
 	}
