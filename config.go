@@ -25,6 +25,7 @@ import (
 	"strings"
 )
 
+// Default is a global Configuration.
 var Default = New()
 
 // Configuration struct
@@ -55,6 +56,18 @@ func (c *Configuration) GetString(key string) (string, error) {
 	return c.Section.GetString(key)
 }
 
+// GetStrings method returns []string value.
+// The key may be a simple string or <section_name>.<key>
+func (c *Configuration) GetStrings(key string) ([]string, error) {
+	keys := strings.SplitN(key, ".", 2)
+	if len(keys) == 2 {
+		if section, ok := c.Sections[keys[0]]; ok {
+			return section.GetStrings(keys[1])
+		}
+	}
+	return c.Section.GetStrings(key)
+}
+
 // GetInt method returns integer value.
 // The key may be a simple string or <section_name>.<key>
 func (c *Configuration) GetInt(key string) (int, error) {
@@ -65,6 +78,18 @@ func (c *Configuration) GetInt(key string) (int, error) {
 		}
 	}
 	return c.Section.GetInt(key)
+}
+
+// GetInts method returns []int value.
+// The key may be a simple string or <section_name>.<key>
+func (c *Configuration) GetInts(key string) ([]int, error) {
+	keys := strings.SplitN(key, ".", 2)
+	if len(keys) == 2 {
+		if section, ok := c.Sections[keys[0]]; ok {
+			return section.GetInts(keys[1])
+		}
+	}
+	return c.Section.GetInts(key)
 }
 
 // LoadFile method loads config from a file.
@@ -175,4 +200,12 @@ func GetString(key string) (string, error) {
 
 func GetInt(key string) (int, error) {
 	return Default.GetInt(key)
+}
+
+func GetStrings(key string) ([]string, error) {
+	return Default.GetStrings(key)
+}
+
+func GetInts(key string) ([]int, error) {
+	return Default.GetInts(key)
 }

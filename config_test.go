@@ -31,6 +31,7 @@ foo 		= bar
 a 			= 1
 # Using ${key} to get the system environment var
 workspace 	= ${PWD}
+id_list		= [1, 2, 3, 4]
 
 [dev]
 ip 		= 127.0.0.1
@@ -110,6 +111,30 @@ func TestConfiguration(t *testing.T) {
 					convey.So(value, convey.ShouldEqual, "devbar")
 				})
 				convey.Convey(`error should be nil`, func() {
+					convey.So(err, convey.ShouldBeNil)
+				})
+			})
+			convey.Convey(`GetStrings("id_list")`, func() {
+				value, err := GetStrings("id_list")
+				convey.Convey(`value should be ["1", "2", "3", "4"]`, func() {
+					convey.So(value[0], convey.ShouldEqual, "1")
+					convey.So(value[1], convey.ShouldEqual, "2")
+					convey.So(value[2], convey.ShouldEqual, "3")
+					convey.So(value[3], convey.ShouldEqual, "4")
+				})
+				convey.Convey(`and error should be nil`, func() {
+					convey.So(err, convey.ShouldBeNil)
+				})
+			})
+			convey.Convey(`GetInts("id_list")`, func() {
+				value, err := GetInts("id_list")
+				convey.Convey(`value should be [1, 2, 3, 4]`, func() {
+					convey.So(value[0], convey.ShouldEqual, 1)
+					convey.So(value[1], convey.ShouldEqual, 2)
+					convey.So(value[2], convey.ShouldEqual, 3)
+					convey.So(value[3], convey.ShouldEqual, 4)
+				})
+				convey.Convey(`and error should be nil`, func() {
 					convey.So(err, convey.ShouldBeNil)
 				})
 			})
